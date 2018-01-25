@@ -1,0 +1,119 @@
+#longitude, latitude, radius, longitude1, latitude1, longitude2, latitude2, types, variables, lastRecord
+
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Urban Observatory
+  description: Warpper around the Urban Observatory API to provide time series data
+basePath: /api/v1
+tags:
+  - name: Sensors
+    description: Urban Observatory sensor endpoints
+  - name: Specification
+    description: The Urban Observatory API specification
+
+paths:
+  /sensors:
+    get:
+      tags:
+        - Sensors
+      parameters:
+        - name: longitude
+          in: query
+          required: false
+          description: The longitude of the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with latitude and radius.
+          type: float
+        - name: latitude
+          in: query
+          required: false
+          description: The latitude of the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with longitude and radius.
+          type: float
+        - name: radius
+          in: query
+          required: false
+          description: The radius from the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with longitude and latitude.
+          type: float
+        - name: longitude1
+          in: query
+          required: false
+          description: The longitude of the center point
+          type: float
+        - name: latitude1
+          in: query
+          required: false
+          description: The latitude of the sensor to retrieve
+          type: float
+        - name: longitude2
+          in: query
+          required: false
+          description: The longitude of the sensor to retrieve
+          type: float
+        - name: latitude2
+          in: query
+          required: false
+          description: The latitude of the sensor to retrieve
+          type: float
+        - name: type
+          in: query
+          required: false
+          collectionFormat: multi
+          description: The type of the sensor to retrieve
+          type: array
+          items:
+            type: string
+            enum:
+              - Environmental
+              - Parking
+        - name: variable
+          in: query
+          required: false
+          collectionFormat: multi
+          description: The varible of the sensor to retrieve
+          type: array
+          items:
+            type: string
+            enum:
+              - Temperature
+              - Wind
+        - name: lastRecord
+          in: query
+          required: false
+          description: The last record of the sensor to retrieve
+          type: string
+      description: Fetch all sensors
+      consumes:
+        - application/json
+      produces:
+        - application/json
+        - application/geo+json
+        - text/csv
+      responses:
+        200:
+          description: Returns all sensors
+
+  /sensors/{name}:
+    get:
+      tags:
+        - Sensors
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: The name of the sensor to retrieve
+          type: string
+      produces:
+        - application/json
+        - text/csv
+      responses:
+        200:
+          description: Return the sensor with the specified name
+        404:
+          description: Sensor with specified name not found
+
+  /spec:
+    get:
+      tags:
+        - Specification
+      responses:
+        200:
+          description: Return the API specification
