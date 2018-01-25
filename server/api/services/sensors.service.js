@@ -3,7 +3,6 @@ import Request from 'request-promise-native';
 
 class SensorsService {
   all(format, queryParams) {
-
       return new Promise(function(resolve, reject){
 
           let longitude = queryParams.longitude,
@@ -95,7 +94,6 @@ class SensorsService {
   }
 
   byId(format, id) {
-
       return new Promise(function(resolve, reject){
 
           let dataFormat = null;
