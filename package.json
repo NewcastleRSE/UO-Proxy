@@ -2,22 +2,24 @@
   "name": "urban-observatory",
   "version": "1.0.0",
   "repository": "https://github.com/nicd-portal/urban-observatory",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "description": "Warpper around the Urban Observatory API to provide time series data",
   "main": "index.js",
   "scripts": {
     "start": "cd build && node main",
     "compile": "node build.js && backpack build",
     "dev": "node build.js && backpack dev | pino -o 'short'",
-    "debug": "node build.js && backpack dev --inspect-brk | pino -o 'short'",    
+    "debug": "node build.js && backpack dev --inspect-brk | pino -o 'short'",
     "test": "node build.js && _mocha --compilers js:babel-register --exit"
-    
   },
   "dependencies": {
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
+    "lodash": "^4.17.4",
+    "moment": "^2.20.1",
+    "moment-timezone": "^0.5.14",
     "pino": "^4.7.3",
     "request-promise-native": "1.0.5",
     "source-map-support": "^0.4.15",
