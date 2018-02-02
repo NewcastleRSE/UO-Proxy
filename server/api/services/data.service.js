@@ -1,13 +1,14 @@
 import Logger from '../../common/logger';
-import Moment from 'moment'
-import Request from "request-promise-native";
+import Moment from 'moment-timezone';
+import Request from 'request-promise-native';
+import _ from 'lodash';
 
 class DataService {
     all(format, queryParams) {
         return new Promise(function(resolve, reject){
 
-            let start = Moment(queryParams.start),
-                end = Moment(queryParams.end),
+            let start = Moment(queryParams.start, ['YYYYMMDDhhmmss', 'YYYYMMDD']),
+                end = Moment(queryParams.end, ['YYYYMMDDhhmmss', 'YYYYMMDD']),
                 longitude = queryParams.longitude,
                 latitude = queryParams.latitude,
                 radius = queryParams.radius,
@@ -91,7 +92,24 @@ class DataService {
             }
 
             Request(options).then(function (data) {
-                resolve(data);
+                let formattedData = [];
+                data.forEach(function(sensor){
+                    Object.keys(sensor.data).forEach(function(key){
+                        Object.keys(sensor.data[key].data).forEach(function(timestamp){
+                            formattedData.push({
+                                sensor: sensor.name,
+                                type: sensor.type,
+                                theme: sensor.data[key].meta.theme,
+                                geom: sensor.geom,
+                                measurement: key,
+                                units: sensor.data[key].meta.units,
+                                timestamp: Moment(timestamp).tz('Europe/London').toDate(),
+                                reading: sensor.data[key].data[timestamp]
+                            });
+                        });
+                    });
+                });
+                resolve(_.sortBy(formattedData, ['timestamp', 'sensor']));
             }).catch(function (err) {
                 Logger.warn(err);
                 reject(err);
@@ -99,11 +117,11 @@ class DataService {
         });
     }
 
-    byId(format, id) {
+    byId(format, id, queryParams) {
         return new Promise(function(resolve, reject){
 
-            let start = Moment(queryParams.start),
-                end = Moment(queryParams.end),
+            let start = Moment(queryParams.start, ['YYYYMMDDhhmmss', 'YYYYMMDD']),
+                end = Moment(queryParams.end, ['YYYYMMDDhhmmss', 'YYYYMMDD']),
                 variable = queryParams.variable,
                 dataFormat = null;
 
@@ -151,8 +169,24 @@ class DataService {
                 }
             }
 
-            Request(options).then(function (data) {
-                resolve(data);
+            Request(options).then(function (sensor) {
+                let formattedData = [];
+                sensor = sensor['0'];
+                Object.keys(sensor.data).forEach(function(key){
+                    Object.keys(sensor.data[key].data).forEach(function(timestamp){
+                        formattedData.push({
+                            sensor: sensor.name,
+                            type: sensor.type,
+                            theme: sensor.data[key].meta.theme,
+                            geom: sensor.geom,
+                            measurement: key,
+                            units: sensor.data[key].meta.units,
+                            timestamp: Moment(timestamp).tz('Europe/London').toDate(),
+                            reading: sensor.data[key].data[timestamp]
+                        });
+                    });
+                });
+                resolve(_.sortBy(formattedData, ['timestamp', 'sensor']));
             }).catch(function (err) {
                 Logger.warn(err);
                 reject(err);
