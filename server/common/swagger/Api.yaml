@@ -22,37 +22,44 @@ paths:
           in: query
           required: false
           description: The longitude of the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with latitude and radius.
-          type: float
+          type: number
+          format: float
         - name: latitude
           in: query
           required: false
           description: The latitude of the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with longitude and radius.
-          type: float
+          type: number
+          format: float
         - name: radius
           in: query
           required: false
           description: The radius from the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with longitude and latitude.
-          type: float
+          type: number
+          format: float
         - name: longitude1
           in: query
           required: false
           description: The longitude of the center point
-          type: float
+          type: number
+          format: float
         - name: latitude1
           in: query
           required: false
           description: The latitude of the sensor to retrieve
-          type: float
+          type: number
+          format: float
         - name: longitude2
           in: query
           required: false
           description: The longitude of the sensor to retrieve
-          type: float
+          type: number
+          format: float
         - name: latitude2
           in: query
           required: false
           description: The latitude of the sensor to retrieve
-          type: float
+          type: number
+          format: float
         - name: type
           in: query
           required: false
@@ -101,6 +108,137 @@ paths:
           required: true
           description: The name of the sensor to retrieve
           type: string
+      produces:
+        - application/json
+        - text/csv
+      responses:
+        200:
+          description: Return the sensor with the specified name
+        404:
+          description: Sensor with specified name not found
+
+  /data:
+    get:
+      tags:
+        - Data
+      parameters:
+        - name: start
+          in: query
+          required: true
+          description: The start time of the data selection. Can be either a date of a datetime and takes the format YYYYMMDDhhmmss or YYYYMMDD.
+          type: string
+        - name: end
+          in: query
+          required: true
+          description: The end time of the data selection. Can be either a date of a datetime and takes the format YYYYMMDDhhmmss or YYYYMMDD.
+          type: string
+        - name: longitude
+          in: query
+          required: false
+          description: The longitude of the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with latitude and radius.
+          type: number
+          format: float
+        - name: latitude
+          in: query
+          required: false
+          description: The latitude of the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with longitude and radius.
+          type: number
+          format: float
+        - name: radius
+          in: query
+          required: false
+          description: The radius from the center point used to return sensors within a specified distance of a given point. Must be used in conjunction with longitude and latitude.
+          type: number
+          format: float
+        - name: longitude1
+          in: query
+          required: false
+          description: The longitude of the center point
+          type: number
+          format: float
+        - name: latitude1
+          in: query
+          required: false
+          description: The latitude of the sensor to retrieve
+          type: number
+          format: float
+        - name: longitude2
+          in: query
+          required: false
+          description: The longitude of the sensor to retrieve
+          type: number
+          format: float
+        - name: latitude2
+          in: query
+          required: false
+          description: The latitude of the sensor to retrieve
+          type: number
+          format: float
+        - name: type
+          in: query
+          required: false
+          collectionFormat: multi
+          description: The type of the sensor to retrieve
+          type: array
+          items:
+            type: string
+            enum:
+              - Environmental
+              - Parking
+        - name: variable
+          in: query
+          required: false
+          collectionFormat: multi
+          description: The varible of the sensor to retrieve
+          type: array
+          items:
+            type: string
+            enum:
+              - Temperature
+              - Wind
+      description: Fetch all sensors
+      consumes:
+        - application/json
+      produces:
+        - application/json
+        - text/csv
+      responses:
+        200:
+          description: Returns all data within the given time window that meets any of the optional criteria provided.
+
+  /data/{name}:
+    get:
+      tags:
+        - Data
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: The name of the sensor to retrieve
+          type: string
+        - name: start
+          in: query
+          required: true
+          description: The start time of the data selection. Can be either a date of a datetime and takes the format YYYYMMDDhhmmss or YYYYMMDD.
+          type: number
+          format: int64
+        - name: end
+          in: query
+          required: true
+          description: The end time of the data selection. Can be either a date of a datetime and takes the format YYYYMMDDhhmmss or YYYYMMDD.
+          type: number
+          format: int64
+        - name: variable
+          in: query
+          required: false
+          collectionFormat: multi
+          description: The varible of the sensor to retrieve
+          type: array
+          items:
+            type: string
+            enum:
+              - Temperature
+              - Wind
       produces:
         - application/json
         - text/csv
